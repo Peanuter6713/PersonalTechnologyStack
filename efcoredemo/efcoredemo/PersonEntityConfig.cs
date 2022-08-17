@@ -13,6 +13,8 @@ namespace efcoredemo
         public void Configure(EntityTypeBuilder<Person> builder)
         {
             builder.ToTable("T_Persons");
+            //builder.Property(p => p.Owner).IsConcurrencyToken();
+            builder.Property(p => p.RowVersion).IsRowVersion();
         }
     }
 }

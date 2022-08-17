@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using efcoredemo;
 
 namespace efcoredemo.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class TestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220817130141_AddRowVersion")]
+    partial class AddRowVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

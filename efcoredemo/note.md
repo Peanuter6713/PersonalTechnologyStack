@@ -69,6 +69,37 @@
    builder.HasQueryFilter(a => a.IsDeleted == false)
    ```
 
+
+# 并发控制
+
+1.  悲观锁 ，适用于并发量不高的系统。
+
+2.  乐观锁
+
+   ```
+   // 使用某个属性作为并发令牌
+   builder.Property(p => p.Owner).IsConcurrencyToken(); // 会有 ABA问题
+   // 使用RowVersion进行并发访问控制，RowVersion适用于SQLserver
+   builder.Property(p => p.RowVersion).IsRowVersion(); // 推荐使用这个
+   ```
+
+# 表达式树
+
+1.  表达式树可以被efcore在编译期间识别，翻译成对应的SQL语句。
+
+   ```C#
+    Expression<Func<Book, bool>> e1 = b => b.Price > 5;
+    Func<Book, bool> f1 = b => b.Price > 5;
+   
+    using (MyDbContext dbContext = new MyDbContext())
+    {
+    //dbContext.Books.Where(e1).ToArray(); // ef可以将其识别为sql语句，select * from T_Books where Price>5 
+    	dbContext.Books.Where(f1).ToArray(); // 获取所有数据再执行委托所绑定的方法 select * from T_Books
+    	//dbContext.Database.ExecuteSqlInterpolated(@$"insert into T_Books(Name, PubTime, Price) select Name, PubTime, Price from T_Books");
+     }
+   ```
+
    
 
  
+

@@ -19,7 +19,7 @@ namespace efcoredemo
             // 链接Docker中的数据库
             string connStr = "server=192.168.8.107,1433; Database=TestDB; User Id=sa; Password=PaSSword12!";
             optionsBuilder.UseSqlServer(connStr);
-            //optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.LogTo(Console.WriteLine);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

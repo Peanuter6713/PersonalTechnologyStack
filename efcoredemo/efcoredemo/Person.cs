@@ -11,5 +11,7 @@ namespace efcoredemo
         public long Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
+        public string Owner { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }
