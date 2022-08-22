@@ -99,7 +99,21 @@
      }
    ```
 
+
+## 手动创建表达式树
+
+1.  安装ExpressionTreeToString，查看表达式树的结构
+
+   ```
+   Expression<Func<Book, bool>> e1 = b => b.Price > 5;
    
+   Console.WriteLine(e1.ToString(BuiltinRenderer.ObjectNotation, Language.CSharp));
+   Console.WriteLine(e1.ToString(BuiltinRenderer.FactoryMethods, Language.CSharp));
+   ```
+
+   
+
+
 
  
 
