@@ -111,7 +111,16 @@
    Console.WriteLine(e1.ToString(BuiltinRenderer.FactoryMethods, Language.CSharp));
    ```
 
-   
+
+# 实现select的动态化查询
+
+1. 只查询部分列
+
+   ```
+   Select ( b => new object[]{b.X, b.Y})
+   ```
+
+2.  不推荐构建动态表达式树，可根据IQueryable延迟执行的特点，动态构建IQueryable
 
 
 

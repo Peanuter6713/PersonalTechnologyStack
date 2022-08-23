@@ -1,8 +1,11 @@
 ﻿using ExpressionTreeToString;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection.Metadata;
 using ZSpitz.Util;
 
 namespace efcoredemo
@@ -16,9 +19,9 @@ namespace efcoredemo
             Expression<Func<Book, Book, double>> e2 = (b1, b2) => b1.Price + b2.Price;
 
             //Console.WriteLine(e1.ToString(BuiltinRe nderer.ObjectNotation, Language.CSharp));
-            Console.WriteLine(e1.ToString(BuiltinRenderer.FactoryMethods, Language.CSharp));
+            //Console.WriteLine(e1.ToString(BuiltinRenderer.FactoryMethods, Language.CSharp));
 
-            #region MyRegion
+            #region 表达式树
             // 手动创建表达式树
             //var paramB = Expression.Parameter(typeof(Book), "b");
             //var constExp5 = Expression.Constant(5.0, typeof(double));
@@ -27,6 +30,7 @@ namespace efcoredemo
             //var expRoot = Expression.Lambda<Func<Book, bool>>(binExpGreaterThan, paramB);
             #endregion
 
+            #region MyRegion
             //using (MyDbContext dbContext = new MyDbContext())
             //{
             //    //dbContext.Books.Where(e1).ToArray(); // ef可以将其识别为sql语句，select * from T_Books where Price>5 
@@ -38,7 +42,39 @@ namespace efcoredemo
             //    //dbContext.SaveChanges();
             //}
 
+            #endregion
+
+            var result = Query<Book>("Id", "Name");
+            foreach (var item in result)
+            {
+                Console.WriteLine(item[0] + "\t" + item[1]);
+            }
+             
             Console.ReadKey();
         }
+
+        static IEnumerable<object[]> Query<T>(params string[] propertyNames) where T : class
+        {
+            var param = Expression.Parameter(typeof(T));
+            List<Expression> expressions = new List<Expression>();
+
+            foreach (var proName in propertyNames)
+            {
+                Expression expression = Expression.Convert(Expression.MakeMemberAccess(param, typeof(T).GetProperty(proName)), typeof(object));
+
+                expressions.Add(expression);
+            }
+
+
+            var newArrExp = Expression.NewArrayInit(typeof(object), expressions.ToArray());
+            var selectExp = Expression.Lambda<Func<T, object[]>>(newArrExp, param);
+
+            using (MyDbContext ctx = new MyDbContext())
+            {
+                return ctx.Set<T>().Select(selectExp).ToArray();
+            }
+        }
+
+
     }
 }
